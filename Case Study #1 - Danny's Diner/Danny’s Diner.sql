@@ -97,14 +97,15 @@ ORDER BY num_of_days DESC;
 
 WITH ordered_sales_cte AS
 (
- SELECT customer_id, order_date, product_name,
-  DENSE_RANK() OVER(PARTITION BY s.customer_id
-  ORDER BY s.order_date) AS rank
+ SELECT 
+    customer_id,
+    order_date, 
+    product_name,
+    DENSE_RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
 FROM dannys_diner.menu m
 JOIN dannys_diner.sales s
-  ON s.product_id = m.product_id
+ON s.product_id = m.product_id
 )
-
 SELECT customer_id, product_name
 FROM ordered_sales_cte
 WHERE rank = 1
@@ -248,4 +249,5 @@ ON d.customer_id = s.customer_id
 JOIN dannys_diner.menu AS m
 ON s.product_id = m.product_id
 WHERE s.order_date < d.last_date
-GROUP BY d.customer_id, s.order_date, d.join_date, d.valid_date, d.last_date, m.product_name, m.price
+GROUP BY d.customer_id, s.order_date, d.join_date, d.valid_date, d.last_date, m.product_name, m.price;
+
