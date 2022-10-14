@@ -3,7 +3,7 @@
 --------------------------------
 
 --Author: Iyanu Elijah
---Date: 13/10/2022 (updated )
+--Date: 13/10/2022 (updated 14/10/2022)
 --Tool used: PostgreSQL
 
 CREATE SCHEMA dannys_diner;
@@ -125,16 +125,23 @@ LIMIT 1;
 
 --5. Which item was the most popular for each customer?
 
+WITH fav_item_cte AS
+(
+SELECT 
+    s.customer_id, m.product_name, 
+    COUNT(m.product_id) AS order_count,
+    DENSE_RANK() OVER(PARTITION BY s.customer_id ORDER BY COUNT(s.customer_id) DESC) AS rank
+FROM dannys_diner.menu AS m
+JOIN dannys_diner.sales AS s
+ON m.product_id = s.product_id
+GROUP BY s.customer_id, m.product_name
+)
 SELECT 
     customer_id, 
-    product_name, 
-    COUNT(product_name) num_of_purchase
-FROM dannys_diner.menu m
-JOIN dannys_diner.sales s
-ON s.product_id = m.product_id
-GROUP BY customer_id,product_name
-ORDER BY num_of_purchase DESC
-LIMIT 5;
+    product_name,
+    order_count
+FROM fav_item_cte 
+WHERE rank = 1;
 
 --6. Which item was purchased first by the customer after they became a member?
 
@@ -218,8 +225,11 @@ JOIN dannys_diner.sales s
 ON s.product_id = point_table.product_id
 GROUP BY customer_id;
 
---10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+--10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi
+--- how many points do customer A and B have at the end of January?
 
+WITH customer_point AS
+(
 WITH dates_cte AS 
 (
 SELECT *, 
@@ -249,5 +259,8 @@ ON d.customer_id = s.customer_id
 JOIN dannys_diner.menu AS m
 ON s.product_id = m.product_id
 WHERE s.order_date < d.last_date
-GROUP BY d.customer_id, s.order_date, d.join_date, d.valid_date, d.last_date, m.product_name, m.price;
-
+GROUP BY d.customer_id, s.order_date, d.join_date, d.valid_date, d.last_date, m.product_name, m.price
+)
+SELECT customer_id, SUM(points)
+FROM customer_point
+GROUP BY customer_id;
