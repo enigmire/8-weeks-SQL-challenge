@@ -6,8 +6,8 @@
 - [Business Task](#business-task)
 - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Case Study Questions](#case-study-questions)
-- [Solution on Github](Solution.md)
-- [Solution on Medium]()
+- [Solution on Github](https://github.com/enigmire/8-weeks-SQL-challenge/blob/main/Case%20Study%20%231%20-%20Danny's%20Diner/code_process.md)
+- [Solution on Medium](https://medium.com/@meathical/8-week-sql-challenge-case-study-1-dannys-diner-4467a63bc5f4)
 
 ***
 
