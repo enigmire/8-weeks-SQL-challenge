@@ -264,3 +264,6 @@ GROUP BY d.customer_id, s.order_date, d.join_date, d.valid_date, d.last_date, m.
 SELECT customer_id, SUM(points)
 FROM customer_point
 GROUP BY customer_id;
+
+
+
